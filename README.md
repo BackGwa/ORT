@@ -105,7 +105,7 @@ json2ort <input_file> -o <output_file>
 ## Installation & Usage
 
 ### PLAYGROUND
-[ORT Playground](https://backgwa.kro.kr/ORT-Playground/)
+[ORT Playground](https://ort-format.github.io/ORT-Playground/)
 
 ### Rust Library
 

@@ -14,8 +14,8 @@ authors = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/BackGwa/ORT"
-Repository = "https://github.com/BackGwa/ORT"
+Homepage = "https://github.com/ORT-format/ORT"
+Repository = "https://github.com/ORT-format/ORT"
 
 [tool.setuptools.packages.find]
 where = ["python"]
