@@ -98,7 +98,7 @@ Add to your Cargo.toml:
 
 ```toml
 [dependencies]
-ort = "0.1.0"
+ort = { git = "https://github.com/BackGwa/ORT.git" }
 ```
 
 ### TypeScript Library
