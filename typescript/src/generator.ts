@@ -20,7 +20,7 @@ export function generateOrt(value: OrtValue): string {
                 if (valOrt.isArray()) {
                     const arr = valOrt.asArray();
                     if (!arr || arr.length === 0) {
-                        return `${key}:\n[]\n`;
+                        return `${key}:\n[]`;
                     } else {
                         const arrList = arr.map(v => v.toNative());
                         if (isUniformObjectArray(arrList)) {
@@ -31,7 +31,7 @@ export function generateOrt(value: OrtValue): string {
                     }
                 } else {
                     // Single key with non-array value
-                    return `${key}:\n${generateValue(val, false)}\n`;
+                    return `${key}:\n${generateValue(val, false)}`;
                 }
             }
         }
@@ -44,10 +44,10 @@ export function generateOrt(value: OrtValue): string {
             if (isUniformObjectArray(arrList)) {
                 return generateTopLevelObjectArray(arrList);
             } else {
-                return `:${generateArrayContent(arrList, false)}\n`;
+                return `:${generateArrayContent(arrList, false)}`;
             }
         }
-        return ':[]\n';
+        return ':[]';
     } else {
         return generateValue(value.toNative(), false);
     }
@@ -55,25 +55,32 @@ export function generateOrt(value: OrtValue): string {
 
 function generateMultiObject(obj: { [key: string]: any }): string {
     const result: string[] = [];
+    const entries = Object.entries(obj);
 
-    for (const [key, val] of Object.entries(obj)) {
+    for (let i = 0; i < entries.length; i++) {
+        const [key, val] = entries[i];
         const valOrt = new OrtValue(val);
         if (valOrt.isArray()) {
             const arr = valOrt.asArray();
             if (!arr || arr.length === 0) {
-                result.push(`${key}:\n[]\n`);
+                result.push(`${key}:\n[]`);
             } else {
                 const arrList = arr.map(v => v.toNative());
                 if (isUniformObjectArray(arrList)) {
-                    result.push(generateObjectArray(key, arrList));
+                    result.push(generateObjectArray(key, arrList).trimEnd());
                 } else {
-                    result.push(generateSimpleArray(key, arrList));
+                    result.push(generateSimpleArray(key, arrList).trimEnd());
                 }
             }
         } else {
-            result.push(`${key}:\n${generateValue(val, false)}\n`);
+            result.push(`${key}:\n${generateValue(val, false)}`);
         }
-        result.push('\n');
+
+        if (i < entries.length - 1) {
+            result.push('\n\n');
+        } else {
+            result.push('\n');
+        }
     }
 
     return result.join('');
@@ -107,42 +114,40 @@ function isUniformObjectArray(arr: any[]): boolean {
 
 function generateObjectArray(key: string, arr: { [key: string]: any }[]): string {
     if (arr.length === 0) {
-        return `${key}:\n[]\n`;
+        return `${key}:\n[]`;
     }
 
     const first = arr[0];
     const keys = Object.keys(first);
     const header = generateHeader(keys, first);
 
-    const result: string[] = [`${key}:${header}\n`];
+    const result: string[] = [`${key}:${header}`];
 
     for (const item of arr) {
         const values = keys.map(k => generateObjectFieldValue(item[k], keys, k, item));
         result.push(values.join(','));
-        result.push('\n');
     }
 
-    return result.join('');
+    return result.join('\n');
 }
 
 function generateTopLevelObjectArray(arr: { [key: string]: any }[]): string {
     if (arr.length === 0) {
-        return ':[]\n';
+        return ':[]';
     }
 
     const first = arr[0];
     const keys = Object.keys(first);
     const header = generateHeader(keys, first);
 
-    const result: string[] = [`:${header}\n`];
+    const result: string[] = [`:${header}`];
 
     for (const item of arr) {
         const values = keys.map(k => generateObjectFieldValue(item[k], keys, k, item));
         result.push(values.join(','));
-        result.push('\n');
     }
 
-    return result.join('');
+    return result.join('\n');
 }
 
 function generateHeader(keys: string[], firstObj: { [key: string]: any }): string {
@@ -210,7 +215,7 @@ function generateObjectFieldValue(
 }
 
 function generateSimpleArray(key: string, arr: any[]): string {
-    return `${key}:\n${generateArrayContent(arr, false)}\n`;
+    return `${key}:\n${generateArrayContent(arr, false)}`;
 }
 
 function generateArrayContent(arr: any[], inline: boolean): string {

@@ -12,7 +12,7 @@ pub fn generate_ort(value: &OrtValue) -> String {
                 let (key, val) = obj.iter().next().unwrap();
                 if let OrtValue::Array(arr) = val {
                     if arr.is_empty() {
-                        format!("{}:\n[]\n", key)
+                        format!("{}:\n[]", key)
                     } else if is_uniform_object_array(arr) {
                         generate_object_array(key, arr)
                     } else {
@@ -20,7 +20,7 @@ pub fn generate_ort(value: &OrtValue) -> String {
                     }
                 } else {
                     // Single key with non-array value
-                    format!("{}:\n{}\n", key, generate_value(val, false))
+                    format!("{}:\n{}", key, generate_value(val, false))
                 }
             } else {
                 String::new()
@@ -31,7 +31,7 @@ pub fn generate_ort(value: &OrtValue) -> String {
             if is_uniform_object_array(arr) {
                 generate_top_level_object_array(arr)
             } else {
-                format!(":{}\n", generate_array_content(arr, false))
+                format!(":{}", generate_array_content(arr, false))
             }
         }
         _ => generate_value(value, false),
@@ -39,22 +39,29 @@ pub fn generate_ort(value: &OrtValue) -> String {
 }
 
 fn generate_multi_object(obj: &HashMap<String, OrtValue>) -> String {
-    let mut result = String::new();
+    let mut result = Vec::new();
+    let mut entries: Vec<_> = obj.iter().collect();
+    entries.sort_by(|a, b| a.0.cmp(b.0));
 
-    for (key, val) in obj.iter() {
+    for (i, (key, val)) in entries.iter().enumerate() {
         if let OrtValue::Array(arr) = val {
             if is_uniform_object_array(arr) {
-                result.push_str(&generate_object_array(key, arr));
+                result.push(generate_object_array(key, arr).trim_end().to_string());
             } else {
-                result.push_str(&generate_simple_array(key, arr));
+                result.push(generate_simple_array(key, arr).trim_end().to_string());
             }
         } else {
-            result.push_str(&format!("{}:\n{}\n", key, generate_value(val, false)));
+            result.push(format!("{}:\n{}", key, generate_value(val, false)));
         }
-        result.push('\n');
+
+        if i < entries.len() - 1 {
+            result.push("\n\n".to_string());
+        } else {
+            result.push("\n".to_string());
+        }
     }
 
-    result
+    result.join("")
 }
 
 fn is_uniform_object_array(arr: &[OrtValue]) -> bool {
@@ -90,7 +97,7 @@ fn is_uniform_object_array(arr: &[OrtValue]) -> bool {
 
 fn generate_object_array(key: &str, arr: &[OrtValue]) -> String {
     if arr.is_empty() {
-        return format!("{}:\n[]\n", key);
+        return format!("{}:\n[]", key);
     }
 
     let first = &arr[0];
@@ -98,7 +105,7 @@ fn generate_object_array(key: &str, arr: &[OrtValue]) -> String {
         let keys: Vec<_> = obj.keys().cloned().collect();
         let header = generate_header(&keys, obj);
 
-        let mut result = format!("{}:{}\n", key, header);
+        let mut result = vec![format!("{}:{}", key, header)];
 
         for item in arr {
             if let OrtValue::Object(obj) = item {
@@ -106,20 +113,19 @@ fn generate_object_array(key: &str, arr: &[OrtValue]) -> String {
                     .iter()
                     .map(|k| generate_object_field_value(obj.get(k).unwrap_or(&OrtValue::Null), &keys, k, obj))
                     .collect();
-                result.push_str(&values.join(","));
-                result.push('\n');
+                result.push(values.join(","));
             }
         }
 
-        result
+        result.join("\n")
     } else {
-        format!("{}:\n{}\n", key, generate_array_content(arr, false))
+        format!("{}:\n{}", key, generate_array_content(arr, false))
     }
 }
 
 fn generate_top_level_object_array(arr: &[OrtValue]) -> String {
     if arr.is_empty() {
-        return ":[]\n".to_string();
+        return ":[]".to_string();
     }
 
     let first = &arr[0];
@@ -127,7 +133,7 @@ fn generate_top_level_object_array(arr: &[OrtValue]) -> String {
         let keys: Vec<_> = obj.keys().cloned().collect();
         let header = generate_header(&keys, obj);
 
-        let mut result = format!(":{}\n", header);
+        let mut result = vec![format!(":{}", header)];
 
         for item in arr {
             if let OrtValue::Object(obj) = item {
@@ -135,14 +141,13 @@ fn generate_top_level_object_array(arr: &[OrtValue]) -> String {
                     .iter()
                     .map(|k| generate_object_field_value(obj.get(k).unwrap_or(&OrtValue::Null), &keys, k, obj))
                     .collect();
-                result.push_str(&values.join(","));
-                result.push('\n');
+                result.push(values.join(","));
             }
         }
 
-        result
+        result.join("\n")
     } else {
-        format!(":{}\n", generate_array_content(arr, false))
+        format!(":{}", generate_array_content(arr, false))
     }
 }
 
@@ -228,7 +233,7 @@ fn generate_object_field_value(
 }
 
 fn generate_simple_array(key: &str, arr: &[OrtValue]) -> String {
-    format!("{}:\n{}\n", key, generate_array_content(arr, false))
+    format!("{}:\n{}", key, generate_array_content(arr, false))
 }
 
 fn generate_array_content(arr: &[OrtValue], inline: bool) -> String {

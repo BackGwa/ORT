@@ -84,6 +84,12 @@ ORT is not always the optimal choice. Consider using JSON in the following scena
 
 The Rust implementation provides CLI utilities for converting between ORT and JSON formats:
 
+### Installation
+```
+cargo install ort-rs
+```
+
+### Usage
 ```sh
 ort2json <input_file>
 json2ort <input_file>
@@ -101,18 +107,13 @@ json2ort <input_file> -o <output_file>
 ### PLAYGROUND
 [ORT Playground](https://backgwa.kro.kr/ORT-Playground/)
 
-### CLI
-```
-cargo install ort-rs
-```
-
 ### Rust Library
 
 Add to your Cargo.toml:
 
 ```toml
 [dependencies]
-ort-rs = "1.0.0"
+ort-rs = "1.0.1"
 ```
 
 ### TypeScript Library
