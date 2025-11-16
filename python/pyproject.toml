@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ort-python"
+version = "0.1.0"
+description = "Object Record Table - a CSV like structured data format with native object and array support."
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "BACKGWA"}
+]
+
+[project.urls]
+Homepage = "https://github.com/BackGwa/ORT"
+Repository = "https://github.com/BackGwa/ORT"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ort*"]
