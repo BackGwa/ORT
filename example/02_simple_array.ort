@@ -1,9 +1,11 @@
 colors:
 [red,green,blue,yellow]
 
-# [
-#     "red",
-#     "green",
-#     "blue",
-#     "yellow"
-# ]
+# {
+#     "colors": [
+#         "red",
+#         "green",
+#         "blue",
+#         "yellow"
+#     ]
+# }

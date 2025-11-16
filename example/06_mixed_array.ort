@@ -1,17 +1,19 @@
 data:
 [42,hello world,true,(id:100,active:false),[1,2,3]]
 
-# [
-#     42,
-#     "hello world",
-#     true,
-#     {
-#         "id": 100,
-#         "active": false
-#     },
-#     [
-#         1,
-#         2,
-#         3
+# {
+#     "data": [
+#         42,
+#         "hello world",
+#         true,
+#         {
+#             "id": 100,
+#             "active": false
+#         },
+#         [
+#             1,
+#             2,
+#             3
+#         ]
 #     ]
-# ]
+# }
