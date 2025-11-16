@@ -21,7 +21,8 @@
     "typescript": "^5.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "../README.md"
   ],
   "repository": {
     "type": "git",

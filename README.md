@@ -114,6 +114,7 @@ pip install ort-python
 <br>
 
 ## Package Links
+- Crates.io: https://crates.io/crates/ort-rs
 - PyPI: https://pypi.org/project/ort-python/
 - npm: https://www.npmjs.com/package/ort-ts
 
