@@ -109,7 +109,7 @@ Add to your Cargo.toml:
 
 ```toml
 [dependencies]
-ort-rs = "0.1.0"
+ort-rs = "1.0.0"
 ```
 
 ### TypeScript Library

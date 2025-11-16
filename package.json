@@ -1,6 +1,6 @@
 {
   "name": "ort-ts",
-  "version": "0.2.5",
+  "version": "1.0.0",
   "description": "Object Record Table - a CSV like structured data format with native object and array support.",
   "main": "typescript/dist/index.js",
   "types": "typescript/dist/index.d.ts",
