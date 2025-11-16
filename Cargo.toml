@@ -1,7 +1,12 @@
 [package]
-name = "ort"
+name = "ort-rs"
 version = "0.1.0"
 edition = "2021"
+description = "Object Record Table - a CSV like structured data format with native object and array support."
+license = "MIT"
+repository = "https://github.com/BackGwa/ORT"
+homepage = "https://github.com/BackGwa/ORT"
+documentation = "https://github.com/BackGwa/ORT"
 
 [lib]
 path = "rust/lib.rs"

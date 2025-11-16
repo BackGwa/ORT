@@ -1,4 +1,4 @@
-use ort::parse_ort;
+use ort_rs::parse_ort;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};

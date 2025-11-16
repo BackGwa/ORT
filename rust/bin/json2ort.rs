@@ -1,4 +1,4 @@
-use ort::{generate_ort, OrtValue};
+use ort_rs::{generate_ort, OrtValue};
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
