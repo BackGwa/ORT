@@ -1,6 +1,6 @@
 [package]
 name = "ort-rs"
-version = "1.0.1"
+version = "1.1.0"
 edition = "2021"
 description = "Object Record Table - a CSV like structured data format with native object and array support."
 license = "MIT"

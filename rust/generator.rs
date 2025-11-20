@@ -64,20 +64,30 @@ fn generate_multi_object(obj: &HashMap<String, OrtValue>) -> String {
     result.join("")
 }
 
+fn get_value_type(val: &OrtValue) -> &'static str {
+    match val {
+        OrtValue::Null => "null",
+        OrtValue::Bool(_) => "bool",
+        OrtValue::Number(_) => "number",
+        OrtValue::String(_) => "string",
+        OrtValue::Array(_) => "array",
+        OrtValue::Object(_) => "object",
+    }
+}
+
 fn is_uniform_object_array(arr: &[OrtValue]) -> bool {
     if arr.is_empty() {
         return false;
     }
 
     // Check if all elements are objects with the same keys
-    let first_keys = match &arr[0] {
-        OrtValue::Object(obj) => {
-            let mut keys: Vec<_> = obj.keys().collect();
-            keys.sort();
-            keys
-        }
+    let first_obj = match &arr[0] {
+        OrtValue::Object(obj) => obj,
         _ => return false,
     };
+
+    let mut first_keys: Vec<_> = first_obj.keys().collect();
+    first_keys.sort();
 
     for item in arr.iter().skip(1) {
         match item {
@@ -86,6 +96,15 @@ fn is_uniform_object_array(arr: &[OrtValue]) -> bool {
                 keys.sort();
                 if keys != first_keys {
                     return false;
+                }
+
+                // Check if value types match for each key
+                for key in &first_keys {
+                    let first_type = first_obj.get(*key).map(get_value_type).unwrap_or("null");
+                    let current_type = obj.get(*key).map(get_value_type).unwrap_or("null");
+                    if first_type != current_type {
+                        return false;
+                    }
                 }
             }
             _ => return false,

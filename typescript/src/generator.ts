@@ -86,6 +86,13 @@ function generateMultiObject(obj: { [key: string]: any }): string {
     return result.join('');
 }
 
+function getValueType(val: any): string {
+    if (val === null || val === undefined) return 'null';
+    if (Array.isArray(val)) return 'array';
+    if (typeof val === 'object') return 'object';
+    return typeof val;
+}
+
 function isUniformObjectArray(arr: any[]): boolean {
     if (arr.length === 0) {
         return false;
@@ -106,6 +113,15 @@ function isUniformObjectArray(arr: any[]): boolean {
         const keys = Object.keys(item).sort();
         if (JSON.stringify(keys) !== JSON.stringify(firstKeys)) {
             return false;
+        }
+
+        // Check if value types match for each key
+        for (const key of firstKeys) {
+            const firstType = getValueType(arr[0][key]);
+            const currentType = getValueType(item[key]);
+            if (firstType !== currentType) {
+                return false;
+            }
         }
     }
 

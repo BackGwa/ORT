@@ -319,13 +319,15 @@ function parseFieldValue(field: Field, valueStr: string, line: string, lineNum: 
         return createOrtValue({});
     }
 
+    // Handle array value dynamically (when field is defined as nested but value is array)
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+        return parseValue(trimmed, line, lineNum);
+    }
+
     // Parse nested object
     if (!trimmed.startsWith('(') || !trimmed.endsWith(')')) {
-        throw new OrtParseError(
-            lineNum,
-            line,
-            `Expected nested object in parentheses, got: ${trimmed}`
-        );
+        // Fallback: parse as regular value if not in expected format
+        return parseValue(trimmed, line, lineNum);
     }
 
     const inner = trimmed.substring(1, trimmed.length - 1);

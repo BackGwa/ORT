@@ -70,8 +70,25 @@ def _generate_multi_object(obj: Dict[str, Any]) -> str:
     return "".join(result)
 
 
+def _get_value_type(val: Any) -> str:
+    """Get the type of a value."""
+    if val is None:
+        return 'null'
+    if isinstance(val, bool):
+        return 'bool'
+    if isinstance(val, (int, float)):
+        return 'number'
+    if isinstance(val, str):
+        return 'string'
+    if isinstance(val, list):
+        return 'array'
+    if isinstance(val, dict):
+        return 'object'
+    return 'unknown'
+
+
 def _is_uniform_object_array(arr: List[Any]) -> bool:
-    """Check if all elements are objects with the same keys."""
+    """Check if all elements are objects with the same keys and value types."""
     if not arr:
         return False
 
@@ -85,6 +102,13 @@ def _is_uniform_object_array(arr: List[Any]) -> bool:
             return False
         if sorted(item.keys()) != first_keys:
             return False
+
+        # Check if value types match for each key
+        for key in first_keys:
+            first_type = _get_value_type(arr[0].get(key))
+            current_type = _get_value_type(item.get(key))
+            if first_type != current_type:
+                return False
 
     return True
 

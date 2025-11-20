@@ -6,7 +6,7 @@ from .value import OrtValue
 from .parser import parse_ort, OrtParseError
 from .generator import generate_ort
 
-__version__ = "0.1.0"
+__version__ = "1.1.0"
 __all__ = ["OrtValue", "parse_ort", "generate_ort", "OrtParseError"]
 
 

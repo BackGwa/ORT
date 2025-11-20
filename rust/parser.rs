@@ -317,13 +317,15 @@ fn parse_field_value(field: &Field, value_str: &str, line: &str, line_num: usize
                 return Ok(OrtValue::Object(HashMap::new()));
             }
 
+            // Handle array value dynamically (when field is defined as nested but value is array)
+            if trimmed.starts_with('[') && trimmed.ends_with(']') {
+                return parse_value(trimmed, line, line_num);
+            }
+
             // Parse nested object
             if !trimmed.starts_with('(') || !trimmed.ends_with(')') {
-                return Err(OrtError::new(
-                    line_num,
-                    line.to_string(),
-                    format!("Expected nested object in parentheses, got: {}", trimmed),
-                ));
+                // Fallback: parse as regular value if not in expected format
+                return parse_value(trimmed, line, line_num);
             }
 
             let inner = &trimmed[1..trimmed.len()-1];

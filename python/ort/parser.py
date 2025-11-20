@@ -272,12 +272,13 @@ def _parse_field_value(field: Field, value_str: str, line: str, line_num: int) -
     if trimmed == "()":
         return OrtValue({})
 
+    # Handle array value dynamically (when field is defined as nested but value is array)
+    if trimmed.startswith('[') and trimmed.endswith(']'):
+        return _parse_value(trimmed, line, line_num)
+
     if not (trimmed.startswith('(') and trimmed.endswith(')')):
-        raise OrtParseError(
-            line_num,
-            line,
-            f"Expected nested object in parentheses, got: {trimmed}"
-        )
+        # Fallback: parse as regular value if not in expected format
+        return _parse_value(trimmed, line, line_num)
 
     inner = trimmed[1:-1]
     values = _parse_data_values(inner, line_num)
